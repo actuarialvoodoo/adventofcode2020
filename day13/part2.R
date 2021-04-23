@@ -12,9 +12,9 @@ bus_ids <- notes[2] %>%
     flatten_chr() %>%
     as.integer64()
 
-offsets <- seq_along(bus_ids)
+offsets <- as.integer64(seq_along(bus_ids))
 
-idx <- bus_ids > 0L
+idx <- bus_ids > as.integer64(0)
 bus_ids <- bus_ids[idx]
 offsets <- offsets[idx]
 max_bus_idx <- which.max(bus_ids)
@@ -23,15 +23,16 @@ max_bus_id <- bus_ids[max_bus_idx]
 offsets <- offsets - offsets[max_bus_idx]
 
 keep_going <- TRUE
+start_time <- as.integer64("100000000000000")
 
-k <- 1L
+k <- start_time %/% max_bus_id 
 while(keep_going) {
     targets <- k * max_bus_id + offsets
     
-    if (k %% 1000L == 0L) {
+    if (k %% as.integer64(1000) == as.integer64(0)) {
         usethis::ui_info("Trying bus_id {max_bus_id} @ {k * max_bus_id}")
     }
-    if (all(targets %% bus_ids == 0L)) {
+    if (all(targets %% bus_ids == as.integer64(0))) {
         keep_going <- FALSE
         break()   
     }
